@@ -7,7 +7,10 @@ const app = express();
 
 const notes = require ("./Develop/db/db.json");
 
+// Middleware
+// parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
+// parse incoming JSON data
 app.use(express.json());
 
 currentID = notes.length;
@@ -52,14 +55,25 @@ app.delete("/api/notes/:id", function (req, res) {
 app.use(express.static("public"));
 
 app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "public/notes.html"));
+    res.sendFile(path.join(__dirname, "Develop/public/notes.html"));
 });
 
 app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "public/index.html"));
+    res.sendFile(path.join(__dirname, "Develop/public/index.html"));
 });
 
 
 app.listen(PORT, function () {
     console.log("App listening on PORT " + PORT);
 });
+
+function rewriteNotes() {
+    fs.writeFile("Develop/db/db.json", JSON.stringify(notes), function (err) {
+        if (err) {
+            console.log("error")
+            return console.log(err);
+        }
+
+        console.log("Success!");
+    });
+}
