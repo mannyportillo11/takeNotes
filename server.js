@@ -1,11 +1,65 @@
 const express = require('express');
-const { appendFile } = require('fs');
+const path = require("path");
+const fs = require("path");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+const notes = require ("./Develop/db/db.json");
 
-app.listen(PORT, () => {
-    console.log(`API server now on port ${PORT}!`)
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
+currentID = notes.length;
+
+app.get("/api/notes", function (req, res) {
+
+    return res.json(notes);
+});
+
+app.post("/api/notes", function (req, res) {
+    var newNote = req.body;
+
+    newNote["id"] = currentID +1;
+    currentID++;
+    console.log(newNote);
+
+    notes.push(newNote);
+
+    rewriteNotes();
+
+    return res.status(200).end();
+});
+
+app.delete("/api/notes/:id", function (req, res) {
+    res.send('Got a DELETE request at /api/notes/:id')
+
+    var id = req.params.id;
+
+    var idLess = notes.filter(function (less) {
+        return less.id < id;
+    });
+
+    var idGreater = notes.filter(function (greater) {
+        return greater.id > id;
+    });
+
+    notes = idLess.concat(idGreater);
+
+    rewriteNotes();
+})
+
+app.use(express.static("public"));
+
+app.get("/notes", function (req, res) {
+    res.sendFile(path.join(__dirname, "public/notes.html"));
+});
+
+app.get("*", function (req, res) {
+    res.sendFile(path.join(__dirname, "public/index.html"));
+});
+
+
+app.listen(PORT, function () {
+    console.log("App listening on PORT " + PORT);
 });
