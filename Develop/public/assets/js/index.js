@@ -74,11 +74,11 @@ const handleNoteSave = () => {
   });
 };
 
-const handleNoteDelete = (e) => {
+const handleNoteDelete = (key) => {
  
-  e.stopPropagation();
+  key.stopPropagation();
 
-  const note = e.target;
+  const note = key.target;
   const noteId = JSON.parse(note.parentElement.getAttribute('data-note')).id;
 
   if (activeNote.id === noteId) {
@@ -91,13 +91,13 @@ const handleNoteDelete = (e) => {
   });
 };
 
-const handleNoteView = (e) => {
-  e.preventDefault();
-  activeNote = JSON.parse(e.target.parentElement.getAttribute('data-note'));
+const handleNoteView = (key) => {
+  key.preventDefault();
+  activeNote = JSON.parse(key.target.parentElement.getAttribute('data-note'));
   renderActiveNote();
 };
 
-const handleNewNoteView = (e) => {
+const handleNewNoteView = (key) => {
   activeNote = {};
   renderActiveNote();
 };
